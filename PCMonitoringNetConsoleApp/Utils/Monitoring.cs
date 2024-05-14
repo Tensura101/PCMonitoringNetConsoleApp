@@ -10,7 +10,7 @@ namespace PCMonitoringConsoleApp.Utils
 
     abstract class Monitoring
     {
-        static Computer computer = new Computer()
+        protected static Computer computer = new Computer()
         {
             IsGpuEnabled = true,
             IsCpuEnabled = true,
@@ -21,41 +21,12 @@ namespace PCMonitoringConsoleApp.Utils
             IsStorageEnabled = true,
         };
 
+        protected IHardware hardware;
+
         public Monitoring()
         {
             computer.Open();
             computer.Accept(new Visitor());
-        }
-
-        protected IHardware? getFirstMatchingHardware(HardwareType type)
-        {
-            foreach (IHardware hardware in computer.Hardware)
-            {
-                if (hardware.HardwareType == type)
-                {
-                    return hardware;
-                }
-
-            }
-
-            return null;
-        }
-
-        protected IHardware? getFirstMatchingHardware(HardwareType[] types)
-        {
-            foreach (IHardware hardware in computer.Hardware)
-            {
-                foreach (HardwareType type in types)
-                {
-                    if (hardware.HardwareType == type)
-                    {
-                        return hardware;
-                    }
-                }
-
-            }
-
-            return null;
         }
 
         public static void listAllHardware()
@@ -65,6 +36,20 @@ namespace PCMonitoringConsoleApp.Utils
             foreach (IHardware hardware in computer.Hardware)
             {
                 Console.WriteLine("Hardware: {0}, Type: {1}", hardware.Name, hardware.HardwareType);
+            }
+        }
+
+        public void listAllSensors()
+        {
+            if (hardware == null)
+            {
+                return;
+            }
+            hardware.Update();
+
+            foreach (ISensor sensor in hardware.Sensors)
+            {
+                Console.WriteLine("Sensors name: {0}, Type: {1}, Value: {2}", sensor.Name, sensor.SensorType, sensor.Value.GetValueOrDefault());
             }
         }
 

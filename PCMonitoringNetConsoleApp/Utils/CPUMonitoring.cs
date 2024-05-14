@@ -18,26 +18,14 @@ namespace PCMonitoringConsoleApp.Utils
         public CPUMonitoring() : base()
         {
             updateState();
-        }
 
-        public int Temp
-        {
-            get { return temp; }
-        }
-
-        public int Load
-        {
-            get { return load; }
-        }
-
-        public int Consumption
-        {
-            get { return consumption; }
-        }
-
-        public double AvgFrequency
-        {
-            get { return avgFrequency; }
+            foreach (IHardware hardware in computer.Hardware)
+            {
+                if (hardware.HardwareType == HardwareType.Cpu)
+                {
+                    this.hardware = hardware;
+                }
+            }
         }
 
 
@@ -45,7 +33,6 @@ namespace PCMonitoringConsoleApp.Utils
 
         public override void updateState()
         {
-            IHardware? hardware = getFirstMatchingHardware(HardwareType.Cpu);
             if (hardware == null)
             {
                 return;
@@ -96,6 +83,26 @@ namespace PCMonitoringConsoleApp.Utils
             }
             avgFrequency = Math.Round(SumOfFrequency / coresCount / 1000d, 2);
 
+        }
+
+        public int Temp
+        {
+            get { return temp; }
+        }
+
+        public int Load
+        {
+            get { return load; }
+        }
+
+        public int Consumption
+        {
+            get { return consumption; }
+        }
+
+        public double AvgFrequency
+        {
+            get { return avgFrequency; }
         }
     }
 }

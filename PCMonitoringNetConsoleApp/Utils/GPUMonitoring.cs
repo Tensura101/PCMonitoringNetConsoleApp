@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Management;
-using System.Runtime.Intrinsics.Arm;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -37,16 +36,27 @@ namespace PCMonitoringConsoleApp.Utils
                     {
                         object o = key.GetValue("HardwareInformation.qwMemorySize");
                         if (o != null)
-                            MaxMemory = Math.Round((long)o / (1024 * 1024) / 1024d, 2);
+                            maxMemory = Math.Round((long)o / (1024 * 1024) / 1024d, 2);
                     }
                 }
             }
             catch { }
+
+
+            foreach (IHardware hardware in computer.Hardware)
+            {
+                foreach (HardwareType type in gpuTypes)
+                {
+                    if (hardware.HardwareType == type)
+                    {
+                        this.hardware = hardware;
+                    }
+                }
+            }
         }
 
         public override void updateState()
         {
-            IHardware? hardware = getFirstMatchingHardware(gpuTypes);
             if (hardware == null)
             {
                 return;
@@ -100,38 +110,17 @@ namespace PCMonitoringConsoleApp.Utils
 
         }
 
-        public void listAllSensors()
-        {
-            IHardware? hardware = getFirstMatchingHardware(gpuTypes);
-            if (hardware == null)
-            {
-                return;
-            }
-            hardware.Update();
-            Console.WriteLine("Properties length: {0}", hardware.Properties.ToArray().Length);
-
-            foreach (var property in hardware.Properties.ToArray()) 
-            {
-                Console.WriteLine("Property key: {0}", property.Key);
-            }
-
-            foreach (ISensor sensor in hardware.Sensors)
-            {
-                Console.WriteLine("Sensors name: {0}, Type: {1}, Value: {2}", sensor.Name, sensor.SensorType, sensor.Value.GetValueOrDefault());
-            }
-        }
 
 
-
-        public int Fps { get; }
-        public int AvgFps { get; }
-        public int Temp { get; }
-        public int HotSpot { get; }
-        public int Load { get; }
-        public int Consumption { get; }
-        public double Frequency { get; }
-        public double MemoryUsed { get; }
-        public double MaxMemory { get; }
-        public double MemoryFrequency { get; }
+        public int Fps { get { return fps; } }
+        public int AvgFps { get {return avgFps;} }
+        public int Temp { get {return temp;} }
+        public int HotSpot { get {return hotSpot;} }
+        public int Load { get {return load;} }
+        public int Consumption { get {return consumption;} }
+        public double Frequency { get {return frequency;} }
+        public double MemoryUsed { get {return memoryUsed;} }
+        public double MaxMemory { get {return maxMemory;} }
+        public double MemoryFrequency { get {return memoryFrequency;} }
     }
 }

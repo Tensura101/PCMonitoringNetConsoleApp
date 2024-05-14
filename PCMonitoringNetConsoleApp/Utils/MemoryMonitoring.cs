@@ -1,24 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+﻿using LibreHardwareMonitor.Hardware;
+using System;
 
 namespace PCMonitoringConsoleApp.Utils
 {
     internal class MemoryMonitoring : Monitoring
     {
         private double memoryUsed;
-        private double maxMemory;
+        private double maxMemory = 0;
 
         public MemoryMonitoring() : base()
         {
-            maxMemory = new Microsoft.VisualBasic.D;
+            
+            foreach (IHardware hardware in computer.Hardware)
+            {
+                if (hardware.HardwareType == HardwareType.Memory)
+                {
+                    this.hardware = hardware;
+                }
+            }
+
+            updateState();
         }
         public override void updateState()
         {
-            throw new NotImplementedException();
+            if (hardware == null)
+            {
+                return;
+            }
+
+            foreach (ISensor sensor in hardware.Sensors)
+            {
+                if (sensor.SensorType == SensorType.Data && sensor.Name == "Memory Used")
+                {
+                    memoryUsed = Math.Round(sensor.Value.GetValueOrDefault(), 2);
+                    maxMemory += sensor.Value.GetValueOrDefault();
+                }
+                else if (sensor.SensorType == SensorType.Data && sensor.Name == "Memory Available")
+                {
+                    maxMemory += sensor.Value.GetValueOrDefault();
+                }
+            }
+
+            maxMemory = Math.Round(maxMemory, 2);
+
         }
+
+
+        public double MemoryUsed { get { return memoryUsed; } }
+        public double MaxMemory { get { return maxMemory; } }
     }
 }
