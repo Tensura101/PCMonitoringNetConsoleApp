@@ -65,7 +65,9 @@ namespace PCMonitoringNetConsoleApp
 
                 Console.WriteLine(data);
 
-                String resHeader = "HTTP/1.1 200 Everything is Fine\nServer: my_csharp_server\nContent-Type: text/json; charset: UTF-8\n\n";
+                String resHeader  = "HTTP/1.1 200 OK\r\n" +
+                                        "Access-Control-Allow-Origin: *\r\n" + // Allow requests from any origin
+                                        "Content-Type: text/json\r\n\r\n";
                 String resBody = Monitoring.monitorsToJson();
 
                 String resStr = resHeader + resBody;

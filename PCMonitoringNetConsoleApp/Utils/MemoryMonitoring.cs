@@ -34,7 +34,7 @@ namespace PCMonitoringConsoleApp.Utils
             {
                 if (sensor.SensorType == SensorType.Data && sensor.Name == "Memory Used")
                 {
-                    memoryUsed = Math.Round(sensor.Value.GetValueOrDefault(), 2);
+                    memoryUsed = Math.Round(sensor.Value.GetValueOrDefault(), 1);
                     maxMemory += sensor.Value.GetValueOrDefault();
                 }
                 else if (sensor.SensorType == SensorType.Data && sensor.Name == "Memory Available")
@@ -43,7 +43,7 @@ namespace PCMonitoringConsoleApp.Utils
                 }
             }
 
-            maxMemory = Math.Round(maxMemory, 2);
+            maxMemory = Math.Round(maxMemory, 1);
 
         }
 

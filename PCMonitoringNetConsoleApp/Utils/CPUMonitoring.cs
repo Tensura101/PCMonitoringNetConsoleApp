@@ -82,7 +82,7 @@ namespace PCMonitoringConsoleApp.Utils
                 }
 
             }
-            avgFrequency = Math.Round(SumOfFrequency / coresCount / 1000d, 2);
+            avgFrequency = Math.Round(SumOfFrequency / coresCount / 1000d, 1);
 
         }
 

@@ -35,7 +35,7 @@ namespace PCMonitoringConsoleApp.Utils
                     {
                         object o = key.GetValue("HardwareInformation.qwMemorySize");
                         if (o != null)
-                            maxMemory = Math.Round((long)o / (1024 * 1024) / 1024d, 2);
+                            maxMemory = Math.Round((long)o / (1024 * 1024) / 1024d, 1);
                     }
                 }
             }
@@ -68,7 +68,7 @@ namespace PCMonitoringConsoleApp.Utils
             {
                 if (sensor.SensorType == SensorType.SmallData && sensor.Name.Contains("Dedicated Memory Used"))
                 {
-                    memoryUsed = Math.Round(sensor.Value.GetValueOrDefault() / 1024d, 0);
+                    memoryUsed = Math.Round(sensor.Value.GetValueOrDefault() / 1024d / 1024d, 1);
                     //Console.WriteLine("memoryUsed: " + sensor.Value.GetValueOrDefault
                 }
                 else if (sensor.SensorType == SensorType.Factor && sensor.Name.Contains("FPS"))
@@ -86,11 +86,11 @@ namespace PCMonitoringConsoleApp.Utils
                 }
                 else if (sensor.SensorType == SensorType.Clock && sensor.Name.Contains("Core"))
                 {
-                    frequency = Math.Round(sensor.Value.GetValueOrDefault() / 1000d, 2);
+                    frequency = Math.Round(sensor.Value.GetValueOrDefault() / 1000d, 1);
                 }
                 else if (sensor.SensorType == SensorType.Clock && sensor.Name.Contains("Memory"))
                 {
-                    memoryFrequency = Math.Round(sensor.Value.GetValueOrDefault() / 1000d, 2);
+                    memoryFrequency = Math.Round(sensor.Value.GetValueOrDefault() / 1000d, 1);
                 }
                 else if (sensor.SensorType == SensorType.Power&& sensor.Name.Contains("Package"))
                 {
