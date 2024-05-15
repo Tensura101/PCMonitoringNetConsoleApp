@@ -17,11 +17,7 @@ namespace PCMonitoringNetConsoleApp
 
         static void Main(string[] args)
         {
-            //MemoryMonitoring memoryMonitoring = new MemoryMonitoring();
-            //memoryMonitoring.listAllSensors();
-            //Console.WriteLine("MaxMemory:" + memoryMonitoring.MaxMemory);
-
-            httpServer =  new Socket(SocketType.Stream, ProtocolType.Tcp);
+            httpServer = new Socket(SocketType.Stream, ProtocolType.Tcp);
             Thread th = new Thread(new ThreadStart(httpConnect));
             th.Start();
         }
@@ -44,7 +40,11 @@ namespace PCMonitoringNetConsoleApp
 
         private static void httpListener()
         {
-            while(true)
+            MemoryMonitoring memoryMonitoring = new MemoryMonitoring();
+            GPUMonitoring gpuMonitoring = new GPUMonitoring();
+            CPUMonitoring cpuMonitoring = new CPUMonitoring();
+            Console.WriteLine(Monitoring.monitorsToJson());
+            while (true)
             {
                 DateTime time  = DateTime.Now;
 
@@ -61,15 +61,12 @@ namespace PCMonitoringNetConsoleApp
                         break;
                 }
 
+                Monitoring.updateStates();
+
                 Console.WriteLine(data);
 
-                String resHeader = "HTTP/1.1 200 Everything is Fine\nServer: my_csharp_server\nContent-Type: text/html; charset: UTF-8\n\n";
-                String resBody = "<!DOCTYE html> " +
-                    "<html>" +
-                    "<head><title>My Server</title></head>" +
-                    "<body>" +
-                    "<h4>Server Time is: " + time.ToString() + "</h4>" +
-                    "</body></html>";
+                String resHeader = "HTTP/1.1 200 Everything is Fine\nServer: my_csharp_server\nContent-Type: text/json; charset: UTF-8\n\n";
+                String resBody = Monitoring.monitorsToJson();
 
                 String resStr = resHeader + resBody;
 

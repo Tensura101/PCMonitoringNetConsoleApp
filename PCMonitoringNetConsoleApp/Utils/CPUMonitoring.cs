@@ -17,7 +17,6 @@ namespace PCMonitoringConsoleApp.Utils
 
         public CPUMonitoring() : base()
         {
-            updateState();
 
             foreach (IHardware hardware in computer.Hardware)
             {
@@ -26,6 +25,8 @@ namespace PCMonitoringConsoleApp.Utils
                     this.hardware = hardware;
                 }
             }
+            updateState();
+
         }
 
 

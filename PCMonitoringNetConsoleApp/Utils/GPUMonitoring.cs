@@ -26,7 +26,6 @@ namespace PCMonitoringConsoleApp.Utils
 
         public GPUMonitoring() : base()
         {
-            updateState();
 
             try
             {
@@ -53,6 +52,9 @@ namespace PCMonitoringConsoleApp.Utils
                     }
                 }
             }
+
+            updateState();
+
         }
 
         public override void updateState()
@@ -108,6 +110,12 @@ namespace PCMonitoringConsoleApp.Utils
                 }
             }
 
+        }
+
+        public void toArray()
+        {
+            this.GetType().GetProperties();
+            Console.WriteLine("asd");
         }
 
 

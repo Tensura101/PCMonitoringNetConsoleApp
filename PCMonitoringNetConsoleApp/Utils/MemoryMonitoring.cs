@@ -28,6 +28,8 @@ namespace PCMonitoringConsoleApp.Utils
                 return;
             }
 
+            maxMemory = 0;
+
             foreach (ISensor sensor in hardware.Sensors)
             {
                 if (sensor.SensorType == SensorType.Data && sensor.Name == "Memory Used")

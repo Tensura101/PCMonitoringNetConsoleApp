@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -21,12 +22,15 @@ namespace PCMonitoringConsoleApp.Utils
             IsStorageEnabled = true,
         };
 
+        protected static List<Monitoring> monitorings = new List<Monitoring>();
+
         protected IHardware hardware;
 
         public Monitoring()
         {
             computer.Open();
             computer.Accept(new Visitor());
+            monitorings.Add(this);
         }
 
         public static void listAllHardware()
@@ -54,7 +58,72 @@ namespace PCMonitoringConsoleApp.Utils
         }
 
         abstract public void updateState();
+
+        public static void updateStates()
+        {
+            foreach (Monitoring monitoring in monitorings)
+            {
+                monitoring.updateState(); 
+            }
+        }
+
+        public static String monitorsToJson()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("{");
+
+            foreach (Monitoring monitoring in monitorings)
+            {
+                sb.Append("\"");
+                sb.Append(monitoring.GetType().Name);
+                sb.Append("\" :");
+                sb.Append(monitoring.toJson());
+                sb.Append(",");
+            }
+
+            sb.Length--;
+
+            sb.Append("}");
+
+            return sb.ToString();
+        }
+        protected String toJson()
+        {
+            StringBuilder sb = new StringBuilder();
+            PropertyInfo[] properties = GetType().GetProperties();
+            sb.Append("{");
+            foreach (PropertyInfo property in properties)
+            {
+                sb.Append("\"");
+                sb.Append(property.Name);
+                sb.Append("\" :");
+                if(property.PropertyType.Name == "String")
+                {
+                    sb.Append("\"");
+                    sb.Append(property.GetValue(this));
+                    sb.Append("\",");
+                }
+                else if (property.PropertyType.Name == "Int32")
+                {
+                    sb.Append(property.GetValue(this));
+                    sb.Append(",");
+                }
+                else if(property.PropertyType.Name == "Double")
+                {
+                    sb.Append(property.GetValue(this).ToString().Replace(',', '.'));
+                    sb.Append(",");
+                }
+
+
+            }
+            sb.Length--;
+            sb.Append("}");
+
+            return sb.ToString();
+        }
+
     }
+
 
 
     public class Visitor : IVisitor
